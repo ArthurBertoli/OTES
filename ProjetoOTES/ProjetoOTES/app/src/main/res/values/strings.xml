@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ProjetoOTES Financeiro</string>
+    <string name="api_base_url">http://10.0.2.2:8080/</string>
+
+    <!-- UI Strings -->
+    <string name="home_welcome">Olá,</string>
+    <string name="home_summary">Seu Resumo</string>
+    <string name="label_saldo_total">Saldo Total</string>
+    <string name="btn_atualizar">Atualizar</string>
+    <string name="label_acoes_rapidas">Ações Rápidas</string>
+    <string name="btn_novo">Novo</string>
+    <string name="btn_historico">Histórico</string>
+    <string name="btn_lembretes">Lembretes</string>
+
+    <!-- Notifications -->
+    <string name="title_lembretes">Lembretes</string>
+    <string name="switch_notificacoes">Ativar notificações</string>
+    <string name="desc_notificacoes">Receba alertas para não esquecer de registrar suas transações.</string>
+    <string name="label_horario_lembrete">Horário do Lembrete</string>
+    <string name="btn_salvar_config">Salvar Configuração</string>
+    <string name="label_proxima_notif">A próxima notificação será às %1$s</string>
+</resources>
