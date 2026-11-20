@@ -64,4 +64,4 @@ App Financeiro/
 
 ## Autores
 
-Arthur Bertoli
+Arthur Bertoli e Guilherme Tonon
