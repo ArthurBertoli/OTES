@@ -2,15 +2,13 @@ package com.financeiro.api.transacao;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Month;
-import java.time.YearMonth;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.financeiro.api.shared.ResourceNotFoundException;
 import com.financeiro.api.transacao.dto.ResumoTransacoesResponse;
@@ -39,6 +37,8 @@ public class TransacaoService {
 	@Transactional(readOnly = true)
 	public ResumoTransacoesResponse listar(TipoTransacao tipo, String categoria, Integer mes, Integer ano) {
 		List<TransacaoResponse> transacoes = repository.findAll(buildSpecification(tipo, categoria, mes, ano)).stream()
+				// Mes sem ano: o filtro vale para o mes de qualquer ano e e aplicado aqui.
+				.filter(transacao -> mes == null || ano != null || transacao.getDataCadastro().getMonthValue() == mes)
 				.map(TransacaoService::toResponse)
 				.toList();
 
@@ -71,10 +71,19 @@ public class TransacaoService {
 		if (ano != null && ano < 1) {
 			throw new IllegalArgumentException("ano deve ser positivo");
 		}
+		LocalDate inicio = null;
+		LocalDate fim = null;
+		if (ano != null && mes != null) {
+			YearMonth periodo = YearMonth.of(ano, mes);
+			inicio = periodo.atDay(1);
+			fim = periodo.atEndOfMonth();
+		} else if (ano != null) {
+			inicio = LocalDate.of(ano, 1, 1);
+			fim = LocalDate.of(ano, 12, 31);
+		}
 		return TransacaoSpecifications.tipoEquals(tipo)
 				.and(TransacaoSpecifications.categoriaContains(categoria))
-				.and(TransacaoSpecifications.monthEquals(mes))
-				.and(TransacaoSpecifications.yearEquals(ano));
+				.and(TransacaoSpecifications.dateBetween(inicio, fim));
 	}
 
 	private static TransacaoResponse toResponse(Transacao transacao) {

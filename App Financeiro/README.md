@@ -48,11 +48,10 @@ App Financeiro/
         └── res/                      # layouts, strings (inclui a URL da API) e temas
 ```
 
-Os arquivos `Transacao.kt`, `TransacaoAdapter.kt` e `TransacaoService.kt` na raiz do pacote do app são de uma versão inicial e não são usados pelas telas atuais.
-
 ## Como executar
 
-1. **API:** dentro de `backend-api/api-financeiro`, rode `.\mvnw.cmd spring-boot:run` (ou dê dois cliques em `run-backend.bat`). Ela sobe em `http://localhost:8080` e cria o arquivo `banco_financeiro.db` na pasta do projeto.
+1. **API:** dentro de `backend-api/api-financeiro`, rode `.\mvnw.cmd spring-boot:run` (ou dê dois cliques em `run-backend.bat`). É preciso ter um JDK 21 ou mais recente instalado (variável `JAVA_HOME` ou `java` no PATH). Ela sobe em `http://localhost:8080` e usa o arquivo `banco_financeiro.db` da pasta do projeto (criado automaticamente se não existir).
+   - Testes automatizados: `.\mvnw.cmd test`. Os testes usam um banco separado em `target/banco_financeiro_test.db` e não alteram o `banco_financeiro.db`.
 2. **App:** abra `app-android/ProjetoOTES` no Android Studio e execute em um emulador. O app acessa a API em `http://10.0.2.2:8080/`, que é o endereço do computador visto pelo emulador. Para usar um celular físico, altere `api_base_url` em `app/src/main/res/values/strings.xml` para o IP da máquina que roda a API.
 
 ### Endpoints
@@ -60,7 +59,7 @@ Os arquivos `Transacao.kt`, `TransacaoAdapter.kt` e `TransacaoService.kt` na rai
 | Método | Rota | Descrição |
 |---|---|---|
 | `POST` | `/api/transacoes` | Cria uma transação |
-| `GET` | `/api/transacoes?tipo=&categoria=&mes=&ano=` | Lista as transações com o resumo (filtros opcionais) |
+| `GET` | `/api/transacoes?tipo=&categoria=&mes=&ano=` | Lista as transações com o resumo (filtros opcionais; `mes` sem `ano` filtra aquele mês em qualquer ano) |
 | `DELETE` | `/api/transacoes/{id}` | Exclui uma transação |
 
 ## Autores

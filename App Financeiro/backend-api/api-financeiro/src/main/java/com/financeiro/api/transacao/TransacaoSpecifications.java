@@ -15,18 +15,17 @@ public final class TransacaoSpecifications {
 	public static Specification<Transacao> categoriaContains(String categoria) {
 		return (root, query, builder) -> categoria == null || categoria.isBlank()
 				? builder.conjunction()
-				: builder.like(builder.lower(root.get("categoria")), "%" + categoria.toLowerCase() + "%");
+				: builder.like(builder.lower(root.get("categoria")), "%" + categoria.trim().toLowerCase() + "%");
 	}
 
-	public static Specification<Transacao> monthEquals(Integer mes) {
-		return (root, query, builder) -> mes == null ? builder.conjunction() : builder.equal(builder.function("strftime", String.class, builder.literal("%m"), root.get("dataCadastro")), String.format("%02d", mes));
-	}
-
-	public static Specification<Transacao> yearEquals(Integer ano) {
-		return (root, query, builder) -> ano == null ? builder.conjunction() : builder.equal(builder.function("strftime", String.class, builder.literal("%Y"), root.get("dataCadastro")), String.valueOf(ano));
-	}
-
+	/**
+	 * Filtra por intervalo de datas. O SQLite guarda a data como numero (milissegundos), entao
+	 * funcoes de texto como strftime nao funcionam na coluna; comparar intervalos funciona,
+	 * porque o parametro e convertido da mesma forma que o valor gravado.
+	 */
 	public static Specification<Transacao> dateBetween(LocalDate startInclusive, LocalDate endInclusive) {
-		return (root, query, builder) -> builder.between(root.get("dataCadastro"), startInclusive, endInclusive);
+		return (root, query, builder) -> startInclusive == null || endInclusive == null
+				? builder.conjunction()
+				: builder.between(root.get("dataCadastro"), startInclusive, endInclusive);
 	}
 }
